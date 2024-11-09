@@ -3,11 +3,14 @@
 %%% Author: Ethan Garnier
 %%% Date: Fall 2024
 euro = imread('..\assets\1-euro.png');
-euro = rgb2gray(euro);
+coins = imread('..\assets\euro-coins.jpg');
+
 figure();
 imshow(euro);
 
+figure()
+imshow(coins);
 
-rotated_euro = shear_rotation(euro, 45);
+[matchingResult, nMatches] = template_match(euro, euro);
 figure();
-imshow(rotated_euro);
+imshow(matchingResult);

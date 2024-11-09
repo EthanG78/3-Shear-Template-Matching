@@ -1,10 +1,5 @@
-%%% shear_rotation.m
-%%% 
-%%% Author: Ethan Garnier
-%%% Date: Fall 2024
-
 function rotated_img = shear_rotation(img, angle)
-%shear_rotation  3 shear rotation if an image.
+%SHEAR_ROTATION A 3 shear rotation of an image.
 %   rotated_img = shear_rotation(img, angle) rotate the provided
 %   image, img, around its center by angle degrees and return
 %   this rotated image
