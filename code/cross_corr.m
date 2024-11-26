@@ -1,64 +1,41 @@
-function corrImg = cross_corr(img1, img2)
+function corrImg = cross_corr(img1, img2, display_result)
 %CROSS_CORR Perform the frequency domain cross-correlation of two images.
-%   corrImg = cross_corr(img1, img2) computes the cross-correlation between
-%   the provided images, img1 and img2, in the frequency domain using
-%   matrix multiplication. The matrix result, converted back to the spatial
-%   domain is returned.
-
-    % Pad the images to 2 times the size of the larger image.
-    img1_size = size(img1);
-    img2_size = size(img2);
+%   corrImg = cross_corr(img1, img2, display_result) computes the 
+%   cross-correlation between the provided images, img1 and img2, in 
+%   the frequency domain using matrix multiplication. The matrix result, 
+%   converted back to the spatial domain is returned. The display_result
+%   boolean parameter tells the function to display the resulting
+%   spatial domain cross correlation result.
     
-    pad_size = 2 * img1_size - 1;
-    if (img2_size > img1_size)
-        pad_size = 2 * img2_size - 1;
+    % Pad the smaller image to the size of the larger image
+    [img1_M, img1_N] = size(img1);
+    [img2_M, img2_N] = size(img2);
+
+    if (img1_M > img2_M && img1_N > img2_N)
+        img2_padded = zeros([img1_M, img1_N]);
+        img2_padded(1:img2_M, 1:img2_N) = img2(:,:);
+        img2 = img2_padded;
+    else
+        img1_padded = zeros([img2_M, img2_N]);
+        img1_padded(1:img1_M, 1:img1_N) = img1(:,:);
+        img1 = img1_padded;
     end
+
+    % Represent the images in the frequency domain.
+    F_1 = fft2(fftshift(img1));
+    F_2 = fft2(fftshift(img2));
     
-    half_size1 = floor(img1_size / 2);
-    half_size2 = floor(img2_size / 2);
-
-    img1_pad = zeros(pad_size);
-    img2_pad = zeros(pad_size);
-
-    half_pad_size = floor(pad_size / 2);
-
-    % Correction indexing factor for if images are even or odd sizes.
-    correction1 = [0 0];
-    correction2 = [0 0];
-    if (mod(img1_size(1), 2) == 0)
-        correction1(1) = 1;
-    end
-
-    if (mod(img1_size(2), 2) == 0)
-        correction1(2) = 1;
-    end
+    % Perform the normalized frequency domain cross-correlation
+    G = F_1 .* conj(F_2);
+    G = G ./ abs(G);
     
-    if (mod(img2_size(1), 2) == 0)
-        correction2(1) = 1;
+    % Bring the cross-correlation result into the spatial domain.
+    corrImg = ifft2(fftshift(G));
+
+    % Optionally display result
+    if (display_result)
+        figure();
+        imagesc((abs((corrImg))));
+        colormap(gray);
     end
-    
-    if (mod(img2_size(2), 2) == 0)
-        correction2(2) = 1;
-    end
-
-    img1_pad(half_pad_size(1)-half_size1(1):half_pad_size(1)+half_size1(1)-correction1(1),half_pad_size(2)-half_size1(2):half_pad_size(2)+half_size1(2)-correction1(2)) = img1;
-    img2_pad(half_pad_size(1)-half_size2(1):half_pad_size(1)+half_size2(1)-correction2(1),half_pad_size(2)-half_size2(2):half_pad_size(2)+half_size2(2)-correction2(2)) = img2;
-
-    % Represent the two images in FFT format
-    img1_pad = fftshift(img1_pad);
-    img2_pad = fftshift(img2_pad);
-
-    % Images in the frequency domain
-    I1 = fft2(img1_pad);
-    I2 = fft2(img2_pad);
-
-    % Cross-correlation in the frequency domain is 
-    % I1 multiplied by the complex conjugate of I2.
-    C = I1 .* conj(I2);
-
-    % Result in the spatial domain
-    corrImg = ifft2(C);
-
-    % Revert to non-FFT format
-    corrImg = fftshift(corrImg);
 end

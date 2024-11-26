@@ -17,6 +17,7 @@ function [matchingResult, nMatches] = template_match(baseImg, templateImg)
     
     % Convert both input images to grayscale.
     baseImg = rgb2gray(baseImg);
+    [M, N] = size(baseImg);
     templateImg = rgb2gray(templateImg);
     
     while (match)
@@ -29,7 +30,14 @@ function [matchingResult, nMatches] = template_match(baseImg, templateImg)
         % cross-correlation. Both of these steps, including padding of the
         % images, is accomplished in the custom cross-correlation
         % implementation that can be found in cross_corr.m.
-        matchingResult = cross_corr(baseImg, rotated_template);
+        % matchingResult = cross_corr(baseImg, rotated_template);
+        Ga = fft2(fftshift(baseImg));
+        Gb = fft2(fftshift(rotated_template), M, N);
+        matchingResult = ifft2((Ga.*conj(Gb))./abs(Ga.*conj(Gb)));
+            
+        figure()
+        imshow(uint8(fftshift(matchingResult)));
+
 
         % Step 4: Determine the current maximum "matching" value and store
         % it to compare to our global value.
@@ -53,9 +61,7 @@ function [matchingResult, nMatches] = template_match(baseImg, templateImg)
         % Step 6: Increase the angle for the next round of matching.
         angle = angle + 10;
     end
-    
-    angle
-    
+       
     % TODO:
     nMatches = 0;
 end
