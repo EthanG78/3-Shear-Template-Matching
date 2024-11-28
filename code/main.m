@@ -8,17 +8,23 @@ shapes = imread('..\assets\shapes.png');
 square = rgb2gray(square);
 shapes = rgb2gray(shapes);
 
-% figure();
-% imshow(shapes);
+% Maybe LPF the template?
+% square_rot_blur = imgaussfilt(square_rot, 1);
 
-% figure();
-% imshow(square); 
+for angle = 0:359
+    % Rotate the template by the specified angle.
+    template_rot = shear_rotation(square, angle);
 
-square_rot_45 = shear_rotation(square, 45);
+    % Try to perform template matching using the rotated template.
+    [match, matchIndicies] = template_match(shapes, template_rot, 0.03);
 
-figure()
-imshow(square_rot_45);
+    % Is there any matches?
+    if (size(matchIndicies, 1) > 0)
+        % Re-map the angle as shear_rotation rotates counter-clockwise but
+        % draw_rects rotates clockwise.
+        clockwise_angle = 360 - angle;
 
-[match, matchIndicies] = template_match(shapes, square_rot_45, 0.02);
-
-draw_rects(shapes, size(square), matchIndicies, zeros(size(matchIndicies)));
+        % Draw all template matches
+        draw_rects(shapes, size(template_rot), matchIndicies, clockwise_angle * ones(size(matchIndicies)));
+    end
+end
