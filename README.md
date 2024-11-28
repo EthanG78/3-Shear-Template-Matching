@@ -6,6 +6,9 @@ A major drawback of simple template matching, traditionally performed through no
 
 As previously mentioned, traditional template matching is performed through normalized correlation between template and original image. The template matching method implemented here performs this correlation in the frequency domain using the Fourier transform to transform the signals and multiplcation to perform the correlation.
 
+Example template matching result of the template matching methods implemented in this repository can be seen in the figure below. Where the base image was an image full of shapes, and the template was a square.
+![Template Matching Result](./assets/template-matching-result.png)
+
 The work in this repository is done as a research project for the University of New Brunswick's EE6553 Fundamentals of Digital Image Processing.
 
 Author: Ethan Garnier
