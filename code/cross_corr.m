@@ -20,7 +20,7 @@ function corrImg = cross_corr(img1, img2, display_result)
         img1_padded(1:img1_M, 1:img1_N) = img1(:,:);
         img1 = img1_padded;
     end
-
+    
     % Represent the images in the frequency domain.
     F_1 = fft2(fftshift(img1));
     F_2 = fft2(fftshift(img2));

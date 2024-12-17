@@ -2,15 +2,20 @@
 %%%
 %%% Author: Ethan Garnier
 %%% Date: Fall 2024
+coins = imread('..\assets\euro-coins.jpg');
+euro = imread('..\assets\individual-euro.jpg');
 square = imread('..\assets\square.png');
 shapes = imread('..\assets\shapes.png');
 triangle = imread('..\assets\triangle.png');
 circle = imread('..\assets\circle.png');
 
-template = rgb2gray(square);
+% template = rgb2gray(square);
 % template = rgb2gray(triangle);
 % template = rgb2gray(circle);
-base = rgb2gray(shapes);
+template = rgb2gray(euro);
+
+% base = rgb2gray(shapes);
+base = rgb2gray(coins);
 
 % Rotate the template through every angle of the circle, attempting to
 % match the rotated template to the base image and storing any matches
@@ -20,14 +25,8 @@ for angle = 0:359
     % Rotate the template by the specified angle.
     template_rot = shear_rotation(template, angle);
 
-    % TESTING:
-    % template_rot = imgaussfilt(template_rot, 1);
-
-    % figure();
-    % imshow(template_rot);
-
     % Try to perform template matching using the rotated template.
-    [match, matchIndicies] = template_match(base, template_rot, 0.03);
+    [match, matchIndicies] = template_match(base, template_rot, 0.0083);
 
     % Append to row vector of matches (this is slow).
     if (~isempty(matchIndicies))
