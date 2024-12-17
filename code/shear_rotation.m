@@ -38,13 +38,13 @@ function rotated_img = shear_rotation(img, angle)
             y = i - orig_mid_y;
 
             % Three Shear Rotation steps from Paeth.
-            x1 = round(x+y*a);        
+            x1 = round(x+y*a);
             y1 = round(x1*b+y);
             x1 = round(x1+y1*a);       
     
             % Rotate around the center of the new image.
-            x1 = mid_x - x1;
-            y1 = mid_y - y1;
+            x1 = x1 + mid_x;
+            y1 = y1 + mid_y;
             
             % Update the pixel values in the new rotated image.
             if (x1 > 0 && y1 > 0 && x1 <= N && y1 <= M)

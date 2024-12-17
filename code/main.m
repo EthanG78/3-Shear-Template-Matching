@@ -4,8 +4,12 @@
 %%% Date: Fall 2024
 square = imread('..\assets\square.png');
 shapes = imread('..\assets\shapes.png');
+triangle = imread('..\assets\triangle.png');
+circle = imread('..\assets\circle.png');
 
 template = rgb2gray(square);
+% template = rgb2gray(triangle);
+% template = rgb2gray(circle);
 base = rgb2gray(shapes);
 
 % Rotate the template through every angle of the circle, attempting to
@@ -15,6 +19,12 @@ angles = [];
 for angle = 0:359
     % Rotate the template by the specified angle.
     template_rot = shear_rotation(template, angle);
+
+    % TESTING:
+    % template_rot = imgaussfilt(template_rot, 1);
+
+    % figure();
+    % imshow(template_rot);
 
     % Try to perform template matching using the rotated template.
     [match, matchIndicies] = template_match(base, template_rot, 0.03);
@@ -69,7 +79,9 @@ for i = 1:length(matches)
     [y, x] = ind2sub(base_size, matches(i));
     y = y + round(temp_N/4);
     x = x + round(temp_M/4);
-    matches(i) = sub2ind(base_size, y, x);
+    if (x <= base_size(2) && y <= base_size(1))
+        matches(i) = sub2ind(base_size, y, x);
+    end
 end
 
 % Display all of the matches found by the template matching algorithm.
